@@ -5,13 +5,15 @@ using UnityEngine;
 
 public class MoveController : MonoBehaviour
 {
+    [SerializeField] private bool _itsThePlayer = false;
+    [SerializeField] private Transform _pathPatrolling;
     [SerializeField] private float _speed = 1f;
     [SerializeField] private float _gravityRate = 1f;
     [SerializeField] private LayerMask _collisionLayerMask;
     [SerializeField] private float _jumpForce = 5f;
     [SerializeField] private int _extraJumps = 0;
     [SerializeField] private float _maxAngleForPassInDegree = 45f;
-
+    
     private ContactFilter2D _contactFilter;
     private Rigidbody2D _rigidBody2D;
     private Animator _animator;
@@ -29,35 +31,38 @@ public class MoveController : MonoBehaviour
     private const float _minMoveDistance = .001f;
     private const float _shellRadius = .01f;
 
-    void OnEnable()
+    private void OnEnable()
     {
         _rigidBody2D = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    void Start()
+    private void Start()
     {
         _contactFilter.useTriggers = false;
         _contactFilter.SetLayerMask(_collisionLayerMask);
         _contactFilter.useLayerMask = true;
 
         _maxAngleForPassInRadiant = _maxAngleForPassInDegree / Mathf.Rad2Deg;
-    }
 
-    void Update()
-    {
-        _directionVelocity = new Vector2(Input.GetAxis("Horizontal"), 0);
-
-        if (Input.GetKeyDown(KeyCode.Space) && _jumpsDone <= _extraJumps)
-        {
-            _jumped = true;
-            _jumpsDone++;
-            _velocity.y = _jumpForce;
+        if (_itsThePlayer) { 
         }
     }
 
-    void FixedUpdate()
+    private void Update()
+    {
+        if (_itsThePlayer)
+        {
+            GetMoveByKeyBoard();
+        }
+        else
+        {
+            GetMoveByPathPatrolling();
+        }
+    }
+
+    private void FixedUpdate()
     {
         _velocity += _gravityRate * Physics2D.gravity * Time.deltaTime;
         _velocity.x = _directionVelocity.x * _speed;
@@ -74,10 +79,27 @@ public class MoveController : MonoBehaviour
 
         Move(moveVector, true);
 
-        //SetAnimations();
+        SetAnimations();
     }
 
-    void Move(Vector2 move, bool yMovement)
+    private void GetMoveByKeyBoard()
+    {
+        _directionVelocity = new Vector2(Input.GetAxis("Horizontal"), 0);
+
+        if (Input.GetKeyDown(KeyCode.Space) && _jumpsDone <= _extraJumps)
+        {
+            _jumped = true;
+            _jumpsDone++;
+            _velocity.y = _jumpForce;
+        }
+    }
+
+    private void GetMoveByPathPatrolling()
+    {
+
+    }
+
+    private void Move(Vector2 move, bool yMovement)
     {
         float distance = move.magnitude;
         

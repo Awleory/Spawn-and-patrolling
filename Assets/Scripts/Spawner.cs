@@ -8,7 +8,9 @@ public class Spawner : MonoBehaviour
     [SerializeField] private GameObject _objectToSpawn;
     [SerializeField] private float _spawnTime = 1;
     [SerializeField] private Transform _pathPatrolling;
+    [SerializeField] private int _maxObjects;
 
+    private Transform _createdObjects;
     private float _passedTime;
 
     private void Update()
@@ -29,10 +31,30 @@ public class Spawner : MonoBehaviour
 
     private void SpawnObject()
     {
-        Instantiate(_objectToSpawn, gameObject.transform);
-        if (_objectToSpawn.TryGetComponent<WayPointsMovement>(out WayPointsMovement objectsWay))
+        if (_createdObjects == null)
         {
-            objectsWay.SetPath(_pathPatrolling);
+            CreateSpawnedGroup();
         }
+
+        if (_createdObjects.childCount >= _maxObjects)
+        {
+            return;
+        }
+
+        var currentObject = Instantiate(_objectToSpawn, _createdObjects);
+        currentObject.transform.position = transform.position;
+
+        if (currentObject.TryGetComponent<WayPointsMovement>(out WayPointsMovement objectWay) == false)
+        {
+            objectWay = currentObject.AddComponent<WayPointsMovement>();
+        }
+        objectWay.SetPath(_pathPatrolling);
+    }
+
+    private void CreateSpawnedGroup()
+    {
+        _createdObjects = new GameObject().transform;
+        _createdObjects.name = "CreatedObjects";
+        _createdObjects.parent = transform;
     }
 }

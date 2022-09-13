@@ -5,7 +5,7 @@ using UnityEngine;
 public class WayPointsMovement : MonoBehaviour
 {
     [SerializeField] private Transform _path;
-    [SerializeField] private float _speed;
+    [SerializeField] private float _speed = 6f;
 
     private Transform[] _points;
     private int _currentPoint;

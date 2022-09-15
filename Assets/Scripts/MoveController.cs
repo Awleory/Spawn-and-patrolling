@@ -29,6 +29,10 @@ public class MoveController : MonoBehaviour
 
     private const float _minMoveDistance = .001f;
     private const float _shellRadius = .01f;
+    private const string _nameValueOfJumped = "jumped";
+    private const string _nameValueOfSpeed = "speed";
+    private const string _nameValueOfVelocityY = "velocityY";
+    private const string _nameValueOfGrounded = "grounded";
 
     private void OnEnable()
     {
@@ -154,9 +158,9 @@ public class MoveController : MonoBehaviour
 
     private void UpdateAnimationParameters()
     {
-        _animator.SetBool("grounded", _grounded);
-        _animator.SetFloat("velocityY", _velocity.y);
-        _animator.SetFloat("speed", Mathf.Abs(_velocity.x));
-        _animator.SetBool("jumped", _jumped);
+        _animator.SetBool(_nameValueOfGrounded, _grounded);
+        _animator.SetFloat(_nameValueOfVelocityY, _velocity.y);
+        _animator.SetFloat(_nameValueOfSpeed, Mathf.Abs(_velocity.x));
+        _animator.SetBool(_nameValueOfJumped, _jumped);
     }
 }

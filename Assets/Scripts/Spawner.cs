@@ -5,50 +5,46 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private GameObject _objectToSpawn;
+    [SerializeField] private Enemy _objectToSpawn;
     [SerializeField] private float _spawnTime = 1;
     [SerializeField] private Transform _pathPatrolling;
     [SerializeField] private int _maxObjects;
 
     private Transform _createdObjects;
-    private float _passedTime;
+    private Coroutine _currentCoroutine;
+
+    private void OnEnable()
+    {
+        CreateSpawnedGroup();
+    }
 
     private void Update()
     {
-        if (_objectToSpawn == null || _spawnTime == 0)
+        if (_currentCoroutine == null)
         {
-            return;
-        }
-
-        _passedTime += Time.deltaTime;
-
-        if (_passedTime >= _spawnTime)
-        {
-            _passedTime -= _spawnTime;
-            SpawnObject();
+            _currentCoroutine = StartCoroutine(Spawn());
         }
     }
 
-    private void SpawnObject()
+    private IEnumerator Spawn()
     {
-        if (_createdObjects == null)
+        yield return new WaitForSeconds(_spawnTime);
+
+        while (_createdObjects != null && _createdObjects.childCount < _maxObjects)
         {
-            CreateSpawnedGroup();
+            var currentObject = Instantiate(_objectToSpawn, _createdObjects);
+            currentObject.transform.position = transform.position;
+
+            if (currentObject.TryGetComponent<WayPointsMovement>(out WayPointsMovement objectWay) == false)
+            {
+                objectWay = currentObject.AddComponent<WayPointsMovement>();
+            }
+            objectWay.SetPath(_pathPatrolling);
+
+            yield return new WaitForSeconds(_spawnTime);
         }
 
-        if (_createdObjects.childCount >= _maxObjects)
-        {
-            return;
-        }
-
-        var currentObject = Instantiate(_objectToSpawn, _createdObjects);
-        currentObject.transform.position = transform.position;
-
-        if (currentObject.TryGetComponent<WayPointsMovement>(out WayPointsMovement objectWay) == false)
-        {
-            objectWay = currentObject.AddComponent<WayPointsMovement>();
-        }
-        objectWay.SetPath(_pathPatrolling);
+        _currentCoroutine = null;
     }
 
     private void CreateSpawnedGroup()

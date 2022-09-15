@@ -187,7 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f0e1e9fa6183594882ce2240d23855f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _objectToSpawn: {fileID: 1542816848875589854, guid: 4cf3b0dc2f4f1ec469140f86e32fc05c, type: 3}
+  _objectToSpawn: {fileID: -4655262501660548983, guid: 4cf3b0dc2f4f1ec469140f86e32fc05c, type: 3}
   _spawnTime: 2
   _pathPatrolling: {fileID: 218496983}
   _maxObjects: 4
@@ -1645,7 +1645,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f0e1e9fa6183594882ce2240d23855f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _objectToSpawn: {fileID: 1566416091947240464, guid: 529ae7ef16af044479f36cdc8cbbc1bc, type: 3}
+  _objectToSpawn: {fileID: -7696237420277472775, guid: 529ae7ef16af044479f36cdc8cbbc1bc, type: 3}
   _spawnTime: 2
   _pathPatrolling: {fileID: 1337785435}
   _maxObjects: 4

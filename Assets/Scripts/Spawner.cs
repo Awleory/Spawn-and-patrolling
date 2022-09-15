@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private Enemy _objectToSpawn;
-    [SerializeField] private float _spawnTime = 1;
+    [SerializeField] private Enemy _prefab;
+    [SerializeField] private float _spawnDelay = 1;
     [SerializeField] private Transform _pathPatrolling;
     [SerializeField] private int _maxObjects;
 
@@ -28,11 +28,13 @@ public class Spawner : MonoBehaviour
 
     private IEnumerator Spawn()
     {
-        yield return new WaitForSeconds(_spawnTime);
+        WaitForSeconds delay = new WaitForSeconds(_spawnDelay);
+
+        yield return delay;
 
         while (_createdObjects != null && _createdObjects.childCount < _maxObjects)
         {
-            var currentObject = Instantiate(_objectToSpawn, _createdObjects);
+            var currentObject = Instantiate(_prefab, _createdObjects);
             currentObject.transform.position = transform.position;
 
             if (currentObject.TryGetComponent<WayPointsMovement>(out WayPointsMovement objectWay) == false)
@@ -41,7 +43,7 @@ public class Spawner : MonoBehaviour
             }
             objectWay.SetPath(_pathPatrolling);
 
-            yield return new WaitForSeconds(_spawnTime);
+            yield return delay;
         }
 
         _currentCoroutine = null;
